@@ -12,19 +12,13 @@ st.sidebar.header("🎯 Your Goals")
 calorie_goal = st.sidebar.number_input("Daily Calorie Goal", value=2000)
 protein_goal = st.sidebar.number_input("Daily Protein Goal (g)", value=120)
 
-# ---------------- FOOD DATABASE ---------------- #
+# ---------------- LOAD FOOD DATA ---------------- #
 
-food_data = {
-    "Food": [
-        "Rice (1 plate)", "Roti (1)", "Egg (1)", "Chicken (100g)",
-        "Paneer (100g)", "Milk (1 glass)", "Banana (1)",
-        "Apple (1)", "Soya Chunks (50g)", "Oats (50g)"
-    ],
-    "Calories": [250, 100, 70, 165, 265, 150, 100, 95, 170, 190],
-    "Protein": [5, 3, 6, 31, 18, 8, 1, 0, 26, 6]
-}
+@st.cache_data
+def load_data():
+    return pd.read_csv("indian_food.csv")
 
-df_food = pd.DataFrame(food_data)
+df_food = load_data()
 
 # ---------------- SESSION ---------------- #
 
@@ -35,7 +29,13 @@ if "diet" not in st.session_state:
 
 st.sidebar.header("🍽️ Add Food")
 
-food = st.sidebar.selectbox("Select Food", df_food["Food"])
+# search box (upgrade)
+search = st.sidebar.text_input("Search Food")
+
+filtered_food = df_food[df_food["Food"].str.contains(search, case=False)] if search else df_food
+
+food = st.sidebar.selectbox("Select Food", filtered_food["Food"])
+
 quantity = st.sidebar.number_input("Quantity", min_value=1, value=1)
 
 if st.sidebar.button("Add Food"):
@@ -100,6 +100,12 @@ if st.session_state.diet:
         st.warning("Protein intake is low. Increase protein sources.")
     elif protein_diff > 0:
         st.success("Great protein intake!")
+
+    # ---------------- RESET BUTTON ---------------- #
+
+    if st.button("🔄 Reset Day"):
+        st.session_state.diet = []
+        st.success("Reset successful!")
 
 else:
     st.info("Add food from sidebar to start tracking")
