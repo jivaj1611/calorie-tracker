@@ -19,6 +19,7 @@ def load_data():
     return pd.read_csv("indian_food.csv")
 
 df_food = load_data()
+st.write(df_food.columns)
 
 # ---------------- SESSION ---------------- #
 
