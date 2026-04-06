@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
-st.set_page_config(page_title="AI Diet Tracker", layout="wide")
+st.set_page_config(page_title=" Calorie Tracker", layout="wide")
 
-st.title("🥗 AI Smart Diet & Calorie Tracker")
+st.title("🥗Diet & Calorie Tracker")
 
 # ---------------- USER GOALS ---------------- #
 
@@ -114,9 +114,9 @@ if st.session_state.diet:
     prediction = model.predict([[total_cal, total_protein]])[0]
 
     if prediction == 1:
-        st.success("✅ AI: Your diet pattern looks balanced")
+        st.success("✅  Your diet pattern looks balanced")
     else:
-        st.error("⚠️ AI: Your diet pattern needs improvement")
+        st.error("⚠️ Your diet pattern needs improvement")
 
     # Rule-based logic
     if cal_diff < -200:
